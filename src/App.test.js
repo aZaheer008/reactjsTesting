@@ -6,7 +6,7 @@ import App from './App';
 Enzyme.configure({ adapter : new EnzymeAdapter()})
 
 test('renders without error', () => {
-  const wrapper = shallow(<APP />);
+  const wrapper = shallow(<App />);
   const appComponent = wrapper.find("[data-test='component-app']");
 });
 
