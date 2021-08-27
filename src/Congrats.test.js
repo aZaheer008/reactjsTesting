@@ -1,4 +1,3 @@
-import { render, screen } from '@testing-library/react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { findByTestAttr,checkProps } from '../tests/testUtils';
 import Congrats from './Congrats';
