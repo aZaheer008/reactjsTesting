@@ -1,10 +1,17 @@
 import React , { Component } from 'react';
+import { connect } from 'react-redux';
 // import './App.css';
 
 import GuessedWords from './GuessedWords';
 import Congrats from './Congrats';
+import Input from './Input';
+import { getSecretWord } from './actions';
 
- class App extends Component {
+ export class UnconnectedApp extends Component {
+   /**
+    * @method componentDidMount
+    * @returns {undefined}
+    */
   //  constructor(props){
   //    super(props);
   //    this.state = {
@@ -12,14 +19,18 @@ import Congrats from './Congrats';
   //      error : false
   //    };
   //  }
+  componentDidMount (){
+    // get the secret word
+    this.props.getSecretWord();
+  }
    render() {
     return (
       <div className="container">
         <h1>Jotto</h1>
-        <Congrats success={true} />
-        <GuessedWords guessedWords={[
-          { guessedWord: 'train' ,letterMatchCount:3 }
-        ]} />
+        <div>The secret word is {this.props.secretWord}</div>
+        <Congrats success={this.props.success} />
+        <Input />
+        <GuessedWords guessedWords={this.props.guessedWords} />
       </div>
       // <div data-test="component-app">
       //   { !this.state.error ? <h1 data-test="counter-display">The counter is currently {this.state.counter}</h1>:
@@ -37,4 +48,9 @@ import Congrats from './Congrats';
    }
 };
 
-export default App
+const mapStateToProps = ( state ) => {
+  const { success , guessedWords, secretWord } = state;
+  return { success , guessedWords, secretWord };
+};
+
+export default connect(mapStateToProps , { getSecretWord })(UnconnectedApp);

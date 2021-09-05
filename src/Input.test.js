@@ -2,7 +2,7 @@ import React from 'React';
 import { shallow, ShallowWrapper } from 'enzyme';
 
 import { findByTestAttr , storeFactory } from '../tests/testUtils';
-import Input from './Input';
+import Input , {UnconnectedInput} from './Input';
 
 /**
  * Factory function to create a ShallowWrapper for the GuessedWords component.
@@ -58,6 +58,54 @@ describe('render', () => {
   });
 });
 
-describe('update state', () => {
+describe('redux props', () => {
+  test('has success piece of state as prop' , () => {
+    const success = true;
+    const wrapper = setup({ success });
+    const successProp = wrapper.instance().props.success;
+    expect(successProp).toBe(success);
+  });
+  test('`guessWord` action creator is a function prop', () => {
+    const wrapper = setup();
+    const guessWordProp = wrapper.instance().props.guessWord;
+    expect(guessWordProp).toBeInstanceOf(Function);
+  });
+});
+
+describe('`guessWord` action creator call', () => {
+  let guessWordMock,wrapper;
+  const guessedWord = "train";
+  beforeEach(() => {
+    //setup mock for `guessWord`
+    guessWordMock = jest.fn();
+    const props = {
+      guessWord : guessWordMock
+    };
+
+    //setup Input component with guessWordMock as the guessWord prop
+     wrapper =shallow(<UnconnectedInput {...props} />);
+
+     //add value to input box
+     wrapper.setState({ currentGuess : guessedWord });
+
+   //simulate Clicked
+    const submitButton = findByTestAttr(wrapper , 'submit-button');
+    submitButton.simulate('click' , { preventDefault(){} });
+
+  });
+  test('calls `guessWord` when button is clicked', () => {
+    //check to see if mock ran 
+    const guessWordCallCount = guessWordMock.mock.calls.length;
+    expect(guessWordCallCount).toBe(1);
+  });
+
+  test('calls `guessWord` with input value as argument', () => {
+    const guessWordArg = guessWordMock.mock.calls[0][0];
+    expect(guessWordArg).toBe(guessedWord);
+  });
+
+  test('input box clears on submit', () => {
+    expect(wrapper.state('currentGuess')).toBe('');
+  })
 
 });
